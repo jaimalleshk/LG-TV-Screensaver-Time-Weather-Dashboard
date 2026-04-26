@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>LG ScreenBoard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Settings Overlay (OK → open | ↑↓ navigate | ←→ change | BACK = save & close) -->
+  <div id="settings-overlay" class="settings-hidden" role="dialog" aria-label="Settings">
+    <div id="settings-panel">
+      <div id="settings-title">
+        <span class="settings-icon">⚙</span>
+        Dashboard Settings
+        <span class="settings-hint">↑↓ Navigate  ·  ←→ Change  ·  OK Toggle  ·  BACK Close</span>
+      </div>
+      <div id="settings-rows"></div>
+      <div id="settings-footer">Changes saved automatically.  Press <kbd>BACK</kbd> to close.</div>
+    </div>
+  </div>
+
+  <!-- Burn-in prevention: diagonal scan-line sweep -->
+  <div id="scan-layer" aria-hidden="true"></div>
+  <!-- Burn-in prevention: floating colored particle overlay -->
+  <div id="particle-layer" aria-hidden="true"></div>
+
+  <!-- Main Dashboard -->
+  <div id="app-container">
+
+    <!-- TOP: Clocks -->
+    <div id="clocks-row"></div>
+
+    <div class="section-rule"></div>
+
+    <!-- MIDDLE: Weather strip (top) + info row (bottom) -->
+    <div id="middle-section">
+
+      <!-- Weather forecast strip — full width -->
+      <div id="weather-section">
+        <div id="weather-header">
+          <span id="weather-location-name">──</span>
+          <span id="weather-current-summary"></span>
+          <span id="weather-updated" class="weather-updated-label"></span>
+        </div>
+        <div id="weather-forecast">
+          <div class="weather-placeholder">
+            <span class="spinner"></span>&nbsp; Fetching weather…
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ INFO TABLE: Calendar | Solar Eclipse | Lunar Eclipse | Moon ══
+           table-layout:fixed ensures columns never overlap regardless of content.
+           Proportions (1808px usable after padding):
+             Calendar    44%   ≈ 796px
+             3 × dividers      20px each
+             Solar/Lunar       auto (equal share of ~380px each)
+             Moon Panel        220px fixed
+      -->
+      <table id="info-table">
+        <colgroup>
+          <col class="col-calendar">
+          <col class="col-divider">
+          <col class="col-eclipse">
+          <col class="col-divider">
+          <col class="col-eclipse">
+          <col class="col-divider">
+          <col class="col-moon">
+        </colgroup>
+        <tbody>
+          <tr>
+
+            <!-- Calendar (left, 44%) -->
+            <td class="info-td" id="calendar-td">
+              <div id="calendar-section">
+                <div id="calendar-header">
+                  <span id="calendar-month-label">──</span>
+                  <span class="calendar-legend">
+                    <span class="legend-dot legend-dot--holiday"></span> Holiday &nbsp;
+                    <span class="legend-dot legend-dot--today"></span> Today
+                  </span>
+                </div>
+                <div id="calendar-dow-headers">
+                  <div class="cal-dow">Sun</div>
+                  <div class="cal-dow">Mon</div>
+                  <div class="cal-dow">Tue</div>
+                  <div class="cal-dow">Wed</div>
+                  <div class="cal-dow">Thu</div>
+                  <div class="cal-dow">Fri</div>
+                  <div class="cal-dow">Sat</div>
+                </div>
+                <div id="calendar-grid"></div>
+              </div>
+            </td>
+
+            <td class="info-divider-td"></td>
+
+            <!-- Solar Eclipse -->
+            <td class="info-td" id="solar-td">
+              <div class="eclipse-block" id="eclipse-solar">
+                <div class="eclipse-header">
+                  <span class="eclipse-symbol">☀</span>
+                  <span class="eclipse-title">Next Solar Eclipse</span>
+                </div>
+                <div class="eclipse-info" id="solar-eclipse-info">
+                  <div class="weather-placeholder"><span class="spinner"></span></div>
+                </div>
+              </div>
+            </td>
+
+            <td class="info-divider-td"></td>
+
+            <!-- Lunar Eclipse -->
+            <td class="info-td" id="lunar-td">
+              <div class="eclipse-block" id="eclipse-lunar">
+                <div class="eclipse-header">
+                  <span class="eclipse-symbol">🌕</span>
+                  <span class="eclipse-title">Next Lunar Eclipse</span>
+                </div>
+                <div class="eclipse-info" id="lunar-eclipse-info">
+                  <div class="weather-placeholder"><span class="spinner"></span></div>
+                </div>
+              </div>
+            </td>
+
+            <td class="info-divider-td"></td>
+
+            <!-- Moon Phase (right, fixed 220px) -->
+            <td class="info-td" id="moon-td">
+              <div id="moon-panel">
+                <div class="info-section-label">Moon Phase</div>
+
+                <div id="moon-canvas-wrap">
+                  <canvas id="moon-canvas" width="100" height="100"></canvas>
+                </div>
+
+                <div id="moon-text">
+                  <div id="moon-phase-name">Loading…</div>
+                  <div id="moon-illumination"></div>
+                  <div id="moon-cycle-day"></div>
+                </div>
+
+                <div id="moon-next-phases">
+                  <div class="info-section-label" style="margin-top:10px">Upcoming</div>
+                  <div id="moon-next-list"></div>
+                </div>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table><!-- /#info-table -->
+
+    </div><!-- /#middle-section -->
+
+  </div><!-- /#app-container -->
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="utils/time.js"></script>
+  <script src="moon.js"></script>
+  <script src="holidays.js"></script>
+  <script src="calendar.js"></script>
+  <script src="weather.js"></script>
+  <script src="eclipse.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

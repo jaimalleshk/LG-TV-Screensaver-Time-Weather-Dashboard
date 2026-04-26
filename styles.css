@@ -1,0 +1,994 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   LG ScreenBoard — styles.css
+   Target: 55"+ LG webOS TV @ 1920×1080, viewed from ~3m
+   Design: Pure black background, high-contrast white text, OLED-safe
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Reset & Root ──────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Palette */
+  --bg:           #000000;
+  --text-primary: #FFFFFF;
+  --text-dim:     #B0B8C8;
+  --text-muted:   #6B7588;
+  --accent:       #4A90D9;
+  --accent-soft:  #2A5080;
+  --rule:         rgba(255,255,255,0.08);
+  --card-bg:      rgba(255,255,255,0.04);
+  --card-hover:   rgba(255,255,255,0.07);
+
+  /* Typography scale — increased for comfortable TV-distance reading at 3m+ */
+  --font-xs:   1.45rem;  /* was 1.2 — labels, muted text */
+  --font-sm:   1.65rem;  /* was 1.4 — secondary info */
+  --font-md:   2.0rem;   /* was 1.7 — weather temps, moon info */
+  --font-lg:   2.4rem;   /* was 2.0 — headlines, hi/lo temps */
+  --font-xl:   3.0rem;   /* was 2.6 — moon phase name, eclipse countdown */
+  --font-time: 5.0rem;   /* was 4.2 — clock digits (HH:MM:SS) */
+  --font-date: 2.2rem;   /* NEW — clock date line (weekday, month day year) */
+  --font-label:1.5rem;   /* NEW — section labels (CENTRAL TIME, WEATHER API…) */
+
+  /* Spacing */
+  --pad-section: 28px 48px;
+  --gap-sm:  12px;
+  --gap-md:  24px;
+  --gap-lg:  40px;
+
+  /* Transitions */
+  --trans-fast: 0.3s ease;
+  --trans-slow: 0.8s ease;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Helvetica Neue', 'Arial', 'DejaVu Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: none;              /* Hide cursor — TV has no mouse */
+}
+
+/* ─── App Container ──────────────────────────────────────────────────────── */
+#app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 56px 24px;
+  position: relative;           /* Anchor for the particle overlay */
+}
+
+/* ─── Section Rule ──────────────────────────────────────────────────────── */
+.section-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOP ROW — Dual Clocks
+   ═══════════════════════════════════════════════════════════════════════════ */
+#clocks-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 0 20px;
+  flex-shrink: 0;
+}
+
+/* Clock block — width adapts to how many clocks are active.
+   --clock-count is set by time.js as a CSS custom property.   */
+.clock-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Scale down slightly when 3–4 clocks are shown */
+:root[style*="--clock-count: 3"] .clock-time,
+:root[style*="--clock-count: 4"] .clock-time {
+  font-size: 3.6rem;
+}
+:root[style*="--clock-count: 3"] .clock-date,
+:root[style*="--clock-count: 4"] .clock-date {
+  font-size: var(--font-md);
+}
+
+.clock-label {
+  font-size: var(--font-label);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+.clock-flag {
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+.clock-time {
+  font-size: var(--font-time);
+  font-weight: 200;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;  /* Prevent width jitter on seconds */
+  line-height: 1.05;
+  transition: opacity var(--trans-fast);
+}
+
+.clock-date {
+  font-size: var(--font-date);
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
+}
+
+/* Vertical divider between clocks */
+.clock-divider {
+  width: 1px;
+  height: 120px;
+  background: var(--rule);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MIDDLE — Weather Forecast
+   ═══════════════════════════════════════════════════════════════════════════ */
+#weather-section {
+  flex: 0 0 auto;          /* Do NOT stretch — let info table take remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 0 6px;
+}
+
+#weather-header {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 14px;
+}
+
+#weather-location-name {
+  font-size: var(--font-lg);
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+#weather-current-summary {
+  font-size: var(--font-md);
+  color: var(--text-dim);
+}
+
+.weather-updated-label {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* Forecast grid */
+#weather-forecast {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.forecast-card {
+  flex: 1;
+  min-width: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--trans-fast), opacity var(--trans-slow);
+}
+
+/* "Today" card gets a subtle accent border */
+.forecast-card.today {
+  border-color: var(--accent-soft);
+  background: rgba(74, 144, 217, 0.07);
+}
+
+.forecast-day {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.forecast-card.today .forecast-day {
+  color: var(--accent);
+}
+
+.forecast-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  /* Icon fade for burn-in prevention */
+  transition: opacity var(--trans-slow);
+}
+
+.forecast-temp-hi {
+  font-size: var(--font-lg);
+  font-weight: 300;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.forecast-temp-lo {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+}
+
+.forecast-desc {
+  font-size: var(--font-xs);
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.3;
+  text-transform: capitalize;
+}
+
+/* Loading / error placeholder */
+.weather-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: var(--font-md);
+  color: var(--text-muted);
+  padding: 40px;
+}
+
+.weather-error {
+  color: #E06060;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INFO TABLE — Calendar | Solar Eclipse | Lunar Eclipse | Moon
+   table-layout:fixed guarantees no column can overflow into a neighbour.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#info-table {
+  flex: 1;                     /* Takes all remaining height in #middle-section */
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;         /* Key: columns honour declared widths exactly */
+  min-height: 0;
+}
+
+/* Column widths via <colgroup> */
+.col-calendar { width: 44%; }
+.col-divider  { width: 20px; }
+.col-eclipse  { /* auto — solar & lunar share remaining space equally */ }
+.col-moon     { width: 220px; }
+
+/* Table data cells — content sits at top, never spills */
+.info-td {
+  vertical-align: top;
+  padding: 0 12px;
+  overflow: hidden;
+}
+
+/* First and last cells have less horizontal padding */
+#calendar-td { padding: 0 12px 0 0; }
+#moon-td     { padding: 0 0 0 12px; }
+
+/* Divider cell — renders as a 1px hairline rule */
+.info-divider-td {
+  width: 20px;
+  padding: 0;
+  position: relative;
+}
+.info-divider-td::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 100%;
+  background: var(--rule);
+}
+
+/* Shared section label used in moon panel (and anywhere else) */
+.info-section-label {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ─── Moon panel ──────────────────────────────────────────────────────────── */
+#moon-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  width: 100%;                 /* Fills the 220px table column */
+}
+
+#moon-canvas-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#moon-canvas {
+  border-radius: 50%;
+  filter: drop-shadow(0 0 8px rgba(200,210,255,0.2));
+}
+
+#moon-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+#moon-phase-name {
+  font-size: var(--font-lg);
+  font-weight: 300;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
+}
+
+#moon-illumination {
+  font-size: var(--font-sm);
+  color: var(--text-dim);
+}
+
+#moon-cycle-day {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+#moon-next-phases {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+#moon-next-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+.moon-next-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 6px 4px;
+}
+
+.moon-next-symbol {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.moon-next-name {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.moon-next-date {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.moon-next-days {
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ECLIPSE BLOCKS  (now live inside info-table cells — no fixed widths needed)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.eclipse-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;                 /* Fills the table cell */
+  overflow: hidden;
+}
+
+.eclipse-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eclipse-symbol {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.eclipse-title {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.eclipse-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eclipse-type-badge {
+  display: inline-block;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 12px;
+  border-radius: 20px;
+  border: 1px solid;
+  width: fit-content;
+}
+
+.eclipse-date {
+  font-size: var(--font-md);
+  font-weight: 300;
+  color: var(--text-primary);
+}
+
+.eclipse-countdown {
+  font-size: var(--font-lg);
+  font-weight: 200;
+  line-height: 1;
+}
+
+.eclipse-path,
+.eclipse-vis {
+  font-size: var(--font-xs);
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.eclipse-duration {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+}
+
+.eclipse-none {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPINNER (loading state)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--text-muted);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MIDDLE SECTION — Weather + Info Table
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#middle-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  padding: 4px 0;
+}
+
+/* ─── Calendar ──────────────────────────────────────────────────────────── */
+
+/* Inside a table cell — just column flex, no extra sizing needed */
+#calendar-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#calendar-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+#calendar-month-label {
+  font-size: var(--font-lg);
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.legend-dot--holiday { background: #E07830; }
+.legend-dot--today   { background: var(--accent); }
+
+#calendar-dow-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.cal-dow {
+  text-align: center;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--rule);
+}
+
+#calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+/* ─── Calendar cells ─────────────────────────────────────────────────────── */
+
+.cal-cell {
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 72px;
+  position: relative;
+  transition: background 0.4s ease;
+}
+
+.cal-cell--empty {
+  background: transparent;
+  border-color: transparent;
+}
+
+.cal-cell--today {
+  background: rgba(74,144,217,0.12);
+  border-color: var(--accent);
+}
+
+.cal-cell--weekend {
+  background: rgba(255,255,255,0.02);
+}
+.cal-cell--today.cal-cell--weekend {
+  background: rgba(74,144,217,0.14);
+}
+
+.cal-cell--holiday {
+  border-color: rgba(224,120,48,0.4);
+}
+
+.cal-day-num {
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.cal-cell--today .cal-day-num {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cal-cell--weekend .cal-day-num {
+  color: var(--text-dim);
+}
+
+.cal-weather-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  margin-top: 2px;
+}
+
+.cal-temp {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  line-height: 1;
+}
+
+.cal-temp-lo {
+  color: var(--text-muted);
+}
+
+.cal-holiday-name {
+  font-size: 1.1rem;
+  color: #E07830;
+  line-height: 1.2;
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BURN-IN PREVENTION  — visually active, always-on
+   ═══════════════════════════════════════════════════════════════════════════
+   Layer 1 — Diagonal scan-line beam sweeping left→right every 9 s
+   Layer 2 — Colored floating bubbles rising from bottom (8–24 px, clearly visible)
+   Layer 3 — Sections fade to 40% on a rolling rotation (19–31 s cycles)
+   Layer 4 — Clock digits breathe to 50% opacity every 9 s
+   Layer 5 — Moon canvas glow pulses (6→20 px shadow every 11 s)
+   Layer 6 — Today cell pulses between two blue shades
+   Layer 7 — Eclipse countdown dims every 13 s
+   Layer 8 — Weather icons shimmer on each data refresh
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Layer 1: Diagonal scan-line sweep ─────────────────────────────────── */
+
+#scan-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 498;
+  overflow: hidden;
+}
+
+@keyframes scanSweep {
+  0%   { left: -25%; }
+  100% { left: 115%; }
+}
+
+#scan-layer::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -25%;
+  width: 16%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent                  0%,
+    rgba(255,255,255,0.018)     25%,
+    rgba(255,255,255,0.038)     50%,
+    rgba(255,255,255,0.018)     75%,
+    transparent                100%
+  );
+  transform: rotate(-12deg);
+  animation: scanSweep 9s cubic-bezier(0.4,0,0.6,1) infinite;
+  animation-delay: -2s;
+}
+
+/* ─── Layer 2: Floating bubble particles ─────────────────────────────────── */
+
+#particle-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 499;
+  overflow: hidden;
+}
+
+/*  --peak: CSS variable set per-element by JS (0.25–0.55).
+    Using a CSS var in @keyframes is valid — it resolves from the element.  */
+@keyframes bubbleRise {
+  0%   { transform: translateY(108vh); opacity: 0; }
+  6%   { opacity: var(--peak, 0.35); }
+  88%  { opacity: var(--peak, 0.35); }
+  100% { transform: translateY(-8vh);  opacity: 0; }
+}
+
+@keyframes bubbleWobble {
+  0%   { margin-left:  0px; }
+  30%  { margin-left: 32px; }
+  70%  { margin-left:-26px; }
+  100% { margin-left:  0px; }
+}
+
+.burn-particle {
+  position: absolute;
+  bottom: -5vh;
+  border-radius: 50%;
+  will-change: transform, opacity;
+  animation:
+    bubbleRise   var(--dur, 14s) linear      infinite,
+    bubbleWobble var(--wob, 11s) ease-in-out infinite;
+}
+
+/* Four color variants — assigned randomly by JS */
+.p-blue  { background: radial-gradient(circle, rgba(140,185,255,0.95) 0%, rgba(70,120,215,0.45) 55%, transparent 100%); }
+.p-white { background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(200,215,235,0.40) 55%, transparent 100%); }
+.p-gold  { background: radial-gradient(circle, rgba(255,218,100,0.95) 0%, rgba(200,155, 50,0.40) 55%, transparent 100%); }
+.p-teal  { background: radial-gradient(circle, rgba( 90,220,210,0.95) 0%, rgba( 35,155,145,0.40) 55%, transparent 100%); }
+
+/* ─── Layer 3: Section fade rotation ─────────────────────────────────────── */
+/*  Each section fades to 40% on its own schedule.
+    Staggered delays ensure they never all go dim simultaneously.        */
+
+@keyframes sectionFade {
+  0%, 35%, 100% { opacity: 1.0; }
+  60%,  72%      { opacity: 0.4; }
+}
+
+#weather-section  { animation: sectionFade 22s ease-in-out infinite; animation-delay:  -2s; }
+#calendar-section { animation: sectionFade 27s ease-in-out infinite; animation-delay:  -9s; }
+#moon-panel       { animation: sectionFade 19s ease-in-out infinite; animation-delay: -14s; }
+#eclipse-solar    { animation: sectionFade 31s ease-in-out infinite; animation-delay:  -5s; }
+#eclipse-lunar    { animation: sectionFade 24s ease-in-out infinite; animation-delay: -19s; }
+
+/* ─── Layer 4: Clock breath ──────────────────────────────────────────────── */
+
+@keyframes clockBreath {
+  0%, 100% { opacity: 1.00; }
+  50%       { opacity: 0.50; }
+}
+
+.clock-time {
+  animation: clockBreath 9s ease-in-out infinite;
+}
+
+/* ─── Layer 5: Moon glow pulse ───────────────────────────────────────────── */
+
+@keyframes moonGlow {
+  0%, 100% { filter: drop-shadow(0 0  6px rgba(200,210,255,0.15)); }
+  50%       { filter: drop-shadow(0 0 22px rgba(200,210,255,0.60)); }
+}
+
+#moon-canvas {
+  animation: moonGlow 11s ease-in-out infinite;
+}
+
+/* ─── Layer 6: Today cell pulse ──────────────────────────────────────────── */
+
+@keyframes todayPulse {
+  0%, 100% { background: rgba(74,144,217,0.10); }
+  50%       { background: rgba(74,144,217,0.28); }
+}
+
+.cal-cell--today {
+  animation: todayPulse 7s ease-in-out infinite;
+}
+
+/* ─── Layer 7: Eclipse countdown dim ─────────────────────────────────────── */
+
+@keyframes countdownDim {
+  0%, 100% { opacity: 1.0; }
+  50%       { opacity: 0.50; }
+}
+
+.eclipse-countdown {
+  animation: countdownDim 13s ease-in-out infinite;
+}
+
+/* ─── Layer 8: Weather icon shimmer on refresh ───────────────────────────── */
+
+@keyframes iconShimmer {
+  0%   { opacity: 1.00; }
+  20%  { opacity: 0.30; }
+  60%  { opacity: 0.70; }
+  100% { opacity: 1.00; }
+}
+
+.forecast-icon.shimmer {
+  animation: iconShimmer 4s ease-in-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SETTINGS OVERLAY (remote-control navigable)
+   Triggered by pressing OK/Enter on the TV remote.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+/* Hidden state */
+.settings-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#settings-panel {
+  background: #0D1420;
+  border: 1px solid rgba(74, 144, 217, 0.3);
+  border-radius: 16px;
+  padding: 40px 56px;
+  min-width: 900px;
+  max-width: 1100px;
+  box-shadow: 0 0 60px rgba(74, 144, 217, 0.15);
+}
+
+#settings-title {
+  font-size: var(--font-xl);
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.settings-icon {
+  font-size: 2.2rem;
+}
+
+.settings-hint {
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+  margin-left: auto;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+/* Each clock slot row */
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  border: 2px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+  cursor: default;
+}
+
+/* Focused row (D-pad is on this row) */
+.settings-row.focused {
+  background: rgba(74, 144, 217, 0.12);
+  border-color: var(--accent);
+}
+
+/* Inactive (toggled off) */
+.settings-row.inactive {
+  opacity: 0.45;
+}
+
+.settings-slot-num {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 36px;
+  text-align: center;
+}
+
+.settings-flag {
+  font-size: 2.2rem;
+  min-width: 44px;
+  text-align: center;
+}
+
+.settings-tz-label {
+  font-size: var(--font-lg);
+  font-weight: 300;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.settings-tz-id {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  flex: 1;
+}
+
+/* Left/right arrows flank the timezone name */
+.settings-arrows {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: var(--font-lg);
+  color: var(--text-muted);
+}
+
+.settings-arrows .arr {
+  color: var(--accent);
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.settings-row.focused .settings-arrows .arr {
+  opacity: 1;
+}
+
+.settings-active-badge {
+  font-size: var(--font-sm);
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: rgba(74, 144, 217, 0.2);
+  color: var(--accent);
+  border: 1px solid var(--accent-soft);
+  min-width: 80px;
+  text-align: center;
+}
+
+.settings-active-badge.off {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-muted);
+  border-color: var(--rule);
+}
+
+#settings-footer {
+  margin-top: 28px;
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  text-align: center;
+  border-top: 1px solid var(--rule);
+  padding-top: 20px;
+}
+
+#settings-footer kbd {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid var(--text-muted);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1.1rem;
+  color: var(--text-dim);
+}

@@ -1,0 +1,15 @@
+{
+  "id": "com.screenboard.app",
+  "version": "1.0.0",
+  "vendor": "ScreenBoard",
+  "type": "web",
+  "main": "index.html",
+  "title": "LG ScreenBoard",
+  "icon": "assets/icon.png",
+  "largeIcon": "assets/largeIcon.png",
+  "bgColor": "#000000",
+  "splashBackground": "#000000",
+  "resolution": "1920x1080",
+  "transparent": false,
+  "disableBackHistoryAPI": false
+}
