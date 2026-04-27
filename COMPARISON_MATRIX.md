@@ -2,6 +2,8 @@
 
 How LG ScreenBoard compares to the built-in LG screensaver and Content Store apps.
 
+> **Note on Content Store weather apps:** Apps such as **AccuWeather** are available in the LG Content Store and provide weather forecasts. The comparison below reflects that distinction — rows that were previously marked ❌ for Content Store apps have been corrected.
+
 ---
 
 ## Feature Comparison
@@ -11,8 +13,10 @@ How LG ScreenBoard compares to the built-in LG screensaver and Content Store app
 | **Clock / Time Display** | ❌ | Some | ✅ |
 | **Dual Time Zones** | ❌ | ❌ | ✅ |
 | **Up to 4 Time Zones** | ❌ | ❌ | ✅ |
-| **7-Day Weather Forecast** | ❌ | ❌ | ✅ |
-| **Weather Without API Key** | ❌ | ❌ | ✅ (Open-Meteo) |
+| **7-Day Weather Forecast** | ❌ | ✅ (e.g. AccuWeather) | ✅ |
+| **Weather as Part of a Dashboard** | ❌ | ❌ (standalone app) | ✅ (integrated) |
+| **Weather Without Account / Login** | ❌ | ❌ (AccuWeather requires account) | ✅ (Open-Meteo, no account) |
+| **Weather Without API Key** | ❌ | ✅ (handled by app) | ✅ (Open-Meteo) |
 | **Moon Phase + Illumination** | ❌ | ❌ | ✅ |
 | **Moon Phase Canvas Rendering** | ❌ | ❌ | ✅ |
 | **Next 4 Upcoming Moon Phases** | ❌ | ❌ | ✅ |
