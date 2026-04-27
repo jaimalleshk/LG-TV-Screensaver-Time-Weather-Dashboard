@@ -992,3 +992,113 @@ html, body {
   font-size: 1.1rem;
   color: var(--text-dim);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPLASH SCREEN
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease;
+}
+
+#splash-screen.splash-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+#splash-logo {
+  width: 140px;
+  height: 140px;
+  color: var(--accent);
+  filter: drop-shadow(0 0 24px rgba(74,144,217,0.55));
+  animation: splash-pulse 2s ease-in-out infinite;
+}
+
+@keyframes splash-pulse {
+  0%, 100% { filter: drop-shadow(0 0 18px rgba(74,144,217,0.45)); }
+  50%       { filter: drop-shadow(0 0 40px rgba(74,144,217,0.85)); }
+}
+
+#splash-title {
+  font-size: 4.2rem;
+  font-weight: 200;
+  letter-spacing: 0.18em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+#splash-tagline {
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+#splash-version {
+  font-size: 1.3rem;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+
+#splash-loader {
+  width: 260px;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+#splash-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: splash-load 2.8s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes splash-load {
+  0%   { width: 0%; }
+  60%  { width: 75%; }
+  90%  { width: 92%; }
+  100% { width: 100%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CORNER BRAND WATERMARK
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#brand-watermark {
+  position: absolute;
+  bottom: 18px;
+  right: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(74,144,217,0.25);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
+
+#brand-watermark svg {
+  width: 20px;
+  height: 20px;
+}

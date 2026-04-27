@@ -6,8 +6,40 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>LG ScreenBoard</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/icon.png">
 </head>
 <body>
+
+  <!-- Splash Screen — shown on boot, fades out after JS calls hideSplash() -->
+  <div id="splash-screen">
+    <div id="splash-inner">
+      <svg id="splash-logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- TV body -->
+        <rect x="4" y="4" width="112" height="112" rx="18" fill="#000" stroke="#4A90D9" stroke-width="3"/>
+        <!-- Screen bezel -->
+        <rect x="14" y="16" width="92" height="62" rx="8" fill="#0a1628" stroke="#4A90D9" stroke-width="1.5"/>
+        <!-- SB monogram -->
+        <text x="60" y="59" text-anchor="middle" dominant-baseline="middle"
+              font-family="'Helvetica Neue',Arial,sans-serif" font-weight="700"
+              font-size="32" fill="#4A90D9" letter-spacing="-1">SB</text>
+        <!-- Data dots -->
+        <circle cx="46" cy="68" r="3" fill="#4A90D9"/>
+        <circle cx="60" cy="68" r="3" fill="#ffffff"/>
+        <circle cx="74" cy="68" r="3" fill="#B0B8C8"/>
+        <!-- TV stand -->
+        <rect x="50" y="78" width="20" height="10" fill="#4A90D9"/>
+        <rect x="38" y="88" width="44" height="3" rx="1.5" fill="#4A90D9"/>
+      </svg>
+
+      <div id="splash-title">LG ScreenBoard</div>
+      <div id="splash-tagline">Time · Weather · Moon · Eclipses</div>
+      <div id="splash-version">v1.0.0</div>
+
+      <div id="splash-loader">
+        <div id="splash-bar"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Settings Overlay (OK → open | ↑↓ navigate | ←→ change | BACK = save & close) -->
   <div id="settings-overlay" class="settings-hidden" role="dialog" aria-label="Settings">
@@ -155,6 +187,20 @@
       </table><!-- /#info-table -->
 
     </div><!-- /#middle-section -->
+
+    <!-- Corner brand watermark -->
+    <div id="brand-watermark">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="1" y="1" width="22" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="3.5" y="3.5" width="17" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1"/>
+        <text x="12" y="11" text-anchor="middle" dominant-baseline="middle"
+              font-family="'Helvetica Neue',Arial,sans-serif" font-weight="700"
+              font-size="6.5" fill="currentColor">SB</text>
+        <rect x="10" y="15.5" width="4" height="2.5" fill="currentColor"/>
+        <rect x="7" y="18" width="10" height="1" rx="0.5" fill="currentColor"/>
+      </svg>
+      <span>LG ScreenBoard</span>
+    </div>
 
   </div><!-- /#app-container -->
 

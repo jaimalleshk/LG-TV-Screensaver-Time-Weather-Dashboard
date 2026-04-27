@@ -399,9 +399,22 @@
 
   // ─── Boot ────────────────────────────────────────────────────────────────
 
+  function hideSplash() {
+    const el = document.getElementById('splash-screen');
+    if (!el) return;
+    el.classList.add('splash-hidden');
+    setTimeout(() => { el.style.display = 'none'; }, 900);
+  }
+
+  function initSplash() {
+    const ver = document.getElementById('splash-version');
+    if (ver && CONFIG.VERSION) ver.textContent = 'v' + CONFIG.VERSION;
+  }
+
   function boot() {
     console.log(`[App] LG ScreenBoard v${CONFIG.VERSION} booting`);
 
+    initSplash();
     loadSaved();
     normaliseClocks();
 
@@ -412,6 +425,9 @@
     _intervals.weather  = Weather.start();    // Weather detects location then fetches
 
     spawnParticles();                         // Burn-in: floating particle layer
+
+    // Hide splash after 3s (covers initial data load)
+    setTimeout(hideSplash, 3000);
 
     document.addEventListener('keydown', handleKey);
     document.addEventListener('visibilitychange', () => {

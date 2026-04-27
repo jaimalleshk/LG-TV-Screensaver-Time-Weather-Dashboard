@@ -9,4 +9,5 @@ desktop.ini
 
 # webOS packaging output
 *.ipk
+build/
 
