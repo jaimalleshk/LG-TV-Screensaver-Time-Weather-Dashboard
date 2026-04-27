@@ -994,6 +994,53 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   GEAR / SETTINGS BUTTON
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#gear-btn {
+  position: fixed;
+  top: 22px;
+  right: 48px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 14px;
+  background: rgba(74, 144, 217, 0.10);
+  border: 1px solid rgba(74, 144, 217, 0.28);
+  border-radius: 40px;
+  color: rgba(74, 144, 217, 0.70);
+  font-size: 1.3rem;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  cursor: none;
+  pointer-events: none;
+  transition: opacity 0.4s ease, background 0.4s ease;
+  animation: gear-idle 6s ease-in-out infinite;
+}
+
+#gear-btn svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+#gear-btn.gear-active {
+  background: rgba(74, 144, 217, 0.22);
+  border-color: rgba(74, 144, 217, 0.60);
+  color: rgba(74, 144, 217, 1);
+}
+
+#gear-btn.gear-hidden {
+  opacity: 0;
+}
+
+@keyframes gear-idle {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.75; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    SPLASH SCREEN
    ═══════════════════════════════════════════════════════════════════════════ */
 

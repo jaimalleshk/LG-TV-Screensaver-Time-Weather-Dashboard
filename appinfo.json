@@ -6,5 +6,6 @@
   "main": "index.html",
   "title": "LG ScreenBoard",
   "icon": "assets/icon.png",
-  "largeIcon": "assets/largeIcon.png"
+  "largeIcon": "assets/largeIcon.png",
+  "disableBackHistoryAPI": true
 }

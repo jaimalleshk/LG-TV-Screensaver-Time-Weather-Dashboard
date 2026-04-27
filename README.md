@@ -4,7 +4,15 @@
 
 Displays dual time zones, 8-day weather forecast, moon phases, and upcoming solar & lunar eclipse countdowns — all in a clean, TV-optimized layout designed to run indefinitely on any LG webOS TV.
 
-![LG ScreenBoard](assets/screenshot.png)
+## Screenshots
+
+| Dashboard | Full View |
+|-----------|-----------|
+| ![Dashboard close-up](assets/screenshots/screen_3927.jpg) | ![Dashboard wide](assets/screenshots/screen_3926.jpg) |
+
+| Settings Panel | Developer Mode Setup |
+|----------------|----------------------|
+| ![Settings](assets/screenshots/screen_3928.jpg) | ![Developer Mode](assets/screenshots/screen_3925.jpg) |
 
 ---
 

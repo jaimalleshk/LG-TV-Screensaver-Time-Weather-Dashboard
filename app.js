@@ -233,6 +233,13 @@
 
   // ─── Settings open / close ────────────────────────────────────────────────
 
+  function setGearState(active) {
+    const btn = document.getElementById('gear-btn');
+    if (!btn) return;
+    btn.classList.toggle('gear-active', active);
+    btn.classList.toggle('gear-hidden', active);
+  }
+
   function openSettings() {
     if (_settingsOpen) return;
     _settingsOpen = true;
@@ -240,6 +247,7 @@
     buildSettingsRows();
     const overlay = document.getElementById('settings-overlay');
     if (overlay) overlay.classList.remove('settings-hidden');
+    setGearState(true);
   }
 
   function closeSettings() {
@@ -247,6 +255,7 @@
     _settingsOpen = false;
     const overlay = document.getElementById('settings-overlay');
     if (overlay) overlay.classList.add('settings-hidden');
+    setGearState(false);
     saveAll();
     TimeUtils.rebuildClocks();
     // Invalidate weather cache whenever settings change (provider, units, or location may have changed)
