@@ -10,12 +10,12 @@ How LG ScreenBoard compares to the built-in LG screensaver and Content Store app
 
 | Feature | LG Built-in Screensaver | LG Content Store Apps | **LG ScreenBoard** |
 |---|:---:|:---:|:---:|
-| **Clock / Time Display** | ❌ | Some | ✅ |
+| **Clock / Time Display** | Some (screensaver mode only) | Some | ✅ (always-on) |
 | **Dual Time Zones** | ❌ | ❌ | ✅ |
 | **Up to 4 Time Zones** | ❌ | ❌ | ✅ |
 | **7-Day Weather Forecast** | ❌ | ✅ (e.g. AccuWeather) | ✅ |
 | **Weather as Part of a Dashboard** | ❌ | ❌ (standalone app) | ✅ (integrated) |
-| **Weather Without Account / Login** | ❌ | ❌ (AccuWeather requires account) | ✅ (Open-Meteo, no account) |
+| **Weather Without Account / Login** | ❌ | Optional (AccuWeather works without account; login unlocks extended features) | ✅ (Open-Meteo, no account) |
 | **Weather Without API Key** | ❌ | ✅ (handled by app) | ✅ (Open-Meteo) |
 | **Moon Phase + Illumination** | ❌ | ❌ | ✅ |
 | **Moon Phase Canvas Rendering** | ❌ | ❌ | ✅ |
@@ -25,10 +25,10 @@ How LG ScreenBoard compares to the built-in LG screensaver and Content Store app
 | **Eclipse Type + Path Details** | ❌ | ❌ | ✅ |
 | **Calendar / Full Date Display** | ❌ | Some | ✅ |
 | **Burn-in Safe (OLED Drift)** | ✅ (basic) | ❌ | ✅ (random X/Y) |
-| **Configurable via TV Remote** | ❌ | ❌ | ✅ |
+| **Configurable via TV Remote** | ❌ | ✅ (all Content Store apps use remote) | ✅ |
 | **No Account / Login Required** | ✅ | Varies | ✅ |
 | **Fully Offline (core features)** | ✅ | ❌ | ✅ |
-| **Persistent localStorage Settings** | N/A | ❌ | ✅ |
+| **Persistent localStorage Settings** | N/A | Varies (webOS supports localStorage; most apps persist settings across reboots) | ✅ |
 | **Auto-Launch on Idle** | ✅ | ❌ | ❌ (webOS limit) |
 | **Overlay on Other Apps** | ❌ | ❌ | ❌ (webOS limit) |
 | **Runs Indefinitely When Launched** | ✅ | ✅ | ✅ |
@@ -43,7 +43,7 @@ How LG ScreenBoard compares to the built-in LG screensaver and Content Store app
 |---|:---:|:---:|:---:|:---:|---|
 | **Open-Meteo** *(default)* | Free | None | 8-day daily | Global | Open-source, no registration |
 | OpenWeatherMap (3.0) | Free tier | Required | 8-day daily | Global | Best data quality |
-| OpenWeatherMap (2.5) | Free | Required | 5-day / 3h | Global | Auto-fallback if 3.0 fails |
+| OpenWeatherMap (2.5) | ~~Discontinued June 2024~~ | Required | 5-day / 3h | Global | Retired — use 3.0 instead |
 
 ---
 
